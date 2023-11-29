@@ -1,9 +1,9 @@
-import { AiOutlineHome, AiOutlineMessage, AiOutlineFileImage, AiOutlineBell } from 'react-icons/ai'
+import { AiOutlineHome, AiOutlineMessage, AiOutlineFileImage } from 'react-icons/ai'
 import { BsChatRightDots } from 'react-icons/bs'
 import { TbEdit } from 'react-icons/tb'
 import { RiMindMap } from 'react-icons/ri'
 import { IoMdClipboard } from 'react-icons/io'
-import { FaRegMoon } from 'react-icons/fa'
+import { FaRegMoon, FaRegBell } from 'react-icons/fa'
 import { usePathname } from 'next/navigation'
 
 const NavSide = () => {
@@ -76,7 +76,7 @@ const NavSide = () => {
           <FaRegMoon></FaRegMoon>
         </div>
         <div className='mb-4 text-xl cursor-pointer'>
-          <AiOutlineBell></AiOutlineBell>
+          <FaRegBell></FaRegBell>
         </div>
       </div>
     </div>
