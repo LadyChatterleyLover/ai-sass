@@ -12,7 +12,7 @@ const ViewLayout: React.FC<Props> = ({ children }) => {
       <div className="w-[72px]">
         <NavSide></NavSide>
       </div>
-      <div className="p-5">{children}</div>
+      <div className="p-5 flex-1">{children}</div>
     </div>
   )
 }

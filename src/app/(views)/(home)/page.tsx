@@ -1,8 +1,11 @@
 'use client'
 
-import { useEffect } from 'react'
-import axios from 'axios'
+import Header from '@/app/components/home/Header'
 
 export default function Home() {
-  return <div>app</div>
+  return (
+    <>
+      <Header></Header>
+    </>
+  )
 }

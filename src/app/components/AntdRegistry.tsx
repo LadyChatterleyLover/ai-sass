@@ -25,7 +25,15 @@ const StyledComponentsRegistry = ({ children }: React.PropsWithChildren) => {
   })
   return (
     <StyleProvider cache={cache}>
-      <ConfigProvider locale={zhCN}>{children}</ConfigProvider>
+      <ConfigProvider
+        locale={zhCN}
+        theme={{
+          token: {
+            colorPrimary: '#18A058FF',
+          },
+        }}>
+        {children}
+      </ConfigProvider>
     </StyleProvider>
   )
 }
