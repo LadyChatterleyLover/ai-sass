@@ -1,21 +1,26 @@
 import { NextResponse } from 'next/server'
-import OpenAI from 'openai'
 
-const apiKey = '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'
-
-const openai = new OpenAI({
-  apiKey, // defaults to process.env["OPENAI_API_KEY"]
-})
+const messages = [{ role: 'user', content: '你好,世界' }]
 
 export async function POST() {
+  const body = JSON.stringify({
+    messages,
+    model: 'gpt-3.5-turbo',
+    stream: false,
+  })
   try {
-    const chatCompletion = await openai.chat.completions.create({
-      messages: [{ role: 'user', content: '你好,介绍一下你自己' }],
-      model: 'gpt-3.5-turbo',
+    const response = await fetch((process.env.baseUrl as string) + 'chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.apiKey}`,
+      },
+      body,
     })
+    const res = await response.json()
     return NextResponse.json({
       code: 200,
-      data: chatCompletion.choices[0].message,
+      data: res.data.choices[0].message,
     })
   } catch (err) {
     console.log('err', err)
