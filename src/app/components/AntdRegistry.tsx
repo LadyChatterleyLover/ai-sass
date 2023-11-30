@@ -16,12 +16,7 @@ const StyledComponentsRegistry = ({ children }: React.PropsWithChildren) => {
       return
     }
     isServerInserted.current = true
-    return (
-      <style
-        id="antd"
-        dangerouslySetInnerHTML={{ __html: extractStyle(cache, true) }}
-      />
-    )
+    return <style id='antd' dangerouslySetInnerHTML={{ __html: extractStyle(cache, true) }} />
   })
   return (
     <StyleProvider cache={cache}>
@@ -31,7 +26,8 @@ const StyledComponentsRegistry = ({ children }: React.PropsWithChildren) => {
           token: {
             colorPrimary: '#18A058FF',
           },
-        }}>
+        }}
+      >
         {children}
       </ConfigProvider>
     </StyleProvider>

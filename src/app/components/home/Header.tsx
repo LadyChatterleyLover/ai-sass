@@ -4,10 +4,10 @@ import TypeIt from 'typeit-react'
 const Header = () => {
   return (
     <>
-      <div className="flex justify-center w-full mb-2 text-center text-3xl font-extrabold text-#18A058FF dark:text-#18A058FF lg:text-4xl">
+      <div className='flex justify-center w-full mb-8 text-center text-3xl font-extrabold text-[#18A058FF] dark:text-[#18A058FF] lg:text-4xl'>
         嘟嘟AI
       </div>
-      <div className="flex justify-center w-full mt-3 mb-5">
+      <div className='flex justify-center w-full mb-8 text-lg'>
         <TypeIt
           options={{ loop: true }}
           getBeforeInit={instance => {
@@ -27,10 +27,16 @@ const Header = () => {
           }}
         />
       </div>
-      <div className="flex justify-center w-full gap-x-4">
-        <Button type="primary">AI对话</Button>
-        <Button type="primary">AI绘画</Button>
-        <Button type="primary">AI写作</Button>
+      <div className='flex justify-center w-full gap-x-4 mb-5'>
+        <Button type='primary' size='large' shape='round'>
+          AI对话
+        </Button>
+        <Button type='primary' size='large' shape='round'>
+          AI绘画
+        </Button>
+        <Button type='primary' size='large' shape='round'>
+          AI写作
+        </Button>
       </div>
     </>
   )
