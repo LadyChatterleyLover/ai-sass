@@ -7,6 +7,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        String    @id @default(uuid())
+  username  String    @unique(map: "User_username_key")
+  password  String
+  avatar    String?   @default("")
+  create_at DateTime  @default(now())
+  update_at DateTime? @default(now())
+}
+
+model Topic {
+  id        String    @id @default(uuid())
+  title     String
+  roleId    String
+  roleInfo  Roleplay  @relation(fields: [roleId], references: [id])
+  isLock    Boolean   @default(false)
+  create_at DateTime  @default(now())
+  update_at DateTime? @default(now())
+}
+
 model Tag {
   id    String     @id() @default(uuid())
   name  String     @unique
@@ -14,11 +33,12 @@ model Tag {
 }
 
 model Roleplay {
-  id      String @id() @default(uuid())
-  tag     Tag    @relation(fields: [tagId], references: [id])
+  id      String  @id() @default(uuid())
+  tag     Tag     @relation(fields: [tagId], references: [id])
   tagId   String
   title   String
-  content String @db.Text
-  iconUrl String @db.Text
-  remark  String @db.VarChar(255)
+  topic   Topic[]
+  content String  @db.Text
+  iconUrl String  @db.Text
+  remark  String  @db.VarChar(255)
 }

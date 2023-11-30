@@ -24,3 +24,11 @@ html {
   background-color: #888; /* 设置滑块背景颜色 */
   border-radius: 4px; /* 设置滑块圆角 */
 }
+
+.login .ant-carousel .slick-dots-bottom {
+  bottom: -30px;
+}
+
+.login .ant-carousel .slick-dots li button {
+  background: #323232;
+}

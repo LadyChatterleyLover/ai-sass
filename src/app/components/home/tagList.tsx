@@ -3,6 +3,7 @@ import { useReactive } from 'ahooks'
 import axios from 'axios'
 import { Button, Input } from 'antd'
 import RoleplayList from './RoleplayList'
+import { get } from '@/app/http/request'
 
 interface State {
   tagList: { value: string; label: string }[]
@@ -18,8 +19,8 @@ const TagList = () => {
   })
 
   const getTagList = () => {
-    axios.get('/api/tag').then(res => {
-      const arr = res.data.data.map((item: { name: string; id: string }) => ({
+    get<{ name: string; id: string }[]>('/api/tag').then(res => {
+      const arr = res.data.map(item => ({
         value: item.id,
         label: item.name,
       }))

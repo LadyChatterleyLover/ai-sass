@@ -4,7 +4,7 @@ import prisma from '@/app/db/prismadb'
 export async function POST(req: Request) {
   const data = await req.json()
   const { id } = data
-  const res = await prisma.roleplay.findMany({
+  const res = await prisma.roleplay.findUnique({
     where: {
       id,
     },

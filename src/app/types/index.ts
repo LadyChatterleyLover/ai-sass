@@ -6,3 +6,14 @@ export interface RoleplayItem {
   tagId: string
   title: string
 }
+
+export interface User {
+  avatar: string
+  createAt: string
+  id: number
+  memory: string
+  password: string
+  remainingMemory: string
+  updateAt: string
+  username: string
+}

@@ -6,6 +6,7 @@ import axios from 'axios'
 import { useReactive, useEventListener } from 'ahooks'
 import { Card, Spin, Button } from 'antd'
 import { RoleplayItem } from '@/app/types'
+import { post } from '@/app/http/request'
 
 const { Meta } = Card
 
@@ -25,28 +26,24 @@ const RoleplayList: React.FC<Props> = ({ tagId, keyword }) => {
   })
 
   const getRoleplay = (tagId: string) => {
-    axios
-      .post('/api/roleplay', {
-        tagId,
-        keyword,
-        page: state.page,
-      })
-      .then(res => {
-        state.roleplayList = [...state.roleplayList, ...res.data.data]
-      })
+    post<RoleplayItem[]>('/api/roleplay', {
+      tagId,
+      keyword,
+      page: state.page,
+    }).then(res => {
+      state.roleplayList = [...state.roleplayList, ...res.data]
+    })
   }
 
   const searchRoleplay = (tagId: string) => {
-    axios
-      .post('/api/roleplay', {
-        tagId,
-        keyword,
-        page: state.page,
-      })
-      .then(res => {
-        state.roleplayList = []
-        state.roleplayList = res.data.data
-      })
+    post<RoleplayItem[]>('/api/roleplay', {
+      tagId,
+      keyword,
+      page: state.page,
+    }).then(res => {
+      state.roleplayList = []
+      state.roleplayList = res.data
+    })
   }
 
   const handleScroll = () => {
