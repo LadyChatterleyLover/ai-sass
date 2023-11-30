@@ -3,7 +3,7 @@ import prisma from '@/app/db/prismadb'
 
 export async function POST(req: Request) {
   const data = await req.json()
-  const { tagId, title, content, page = 1, pageSize = 20 } = data
+  const { tagId, title, content, page = 1, pageSize = 30 } = data
   let query = {}
   if (tagId) {
     query = {

@@ -40,19 +40,24 @@ const TagList = () => {
       <div className='my-5'>
         <Input.Search placeholder='搜索prompt提示或关键词...' onSearch={val => {}}></Input.Search>
       </div>
-      <div className='flex flex-wrap gap-3 justify-center w-full my-5'>
-        {state.tagList.map(item => (
-          <Button
-            key={item.value}
-            shape='round'
-            type={state.currentTag === item.value ? 'primary' : 'default'}
-            onClick={() => {
-              state.currentTag = item.value
-            }}
-          >
-            {item.label}
-          </Button>
-        ))}
+      <div className='sticky left-0 right-0 top-0 w-full overflow-hidden'>
+        <div className='flex flex-wrap gap-3 justify-center w-full my-5'>
+          {state.tagList.map(item => (
+            <Button
+              key={item.value}
+              className={`dark:bg-[#18181c] dark:text-white ${
+                state.currentTag === item.value ? 'dark:bg-[#63e2b7] dark:text-black' : ''
+              }`}
+              shape='round'
+              type={state.currentTag === item.value ? 'primary' : 'default'}
+              onClick={() => {
+                state.currentTag = item.value
+              }}
+            >
+              {item.label}
+            </Button>
+          ))}
+        </div>
       </div>
       <RoleplayList tagId={state.currentTag}></RoleplayList>
     </>
