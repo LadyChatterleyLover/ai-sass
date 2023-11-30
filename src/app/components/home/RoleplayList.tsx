@@ -10,9 +10,10 @@ const { Meta } = Card
 
 interface Props {
   tagId: string
+  keyword: string
 }
 
-const RoleplayList: React.FC<Props> = ({ tagId }) => {
+const RoleplayList: React.FC<Props> = ({ tagId, keyword }) => {
   const state = useReactive<{
     roleplayList: RoleplayItem[]
     page: number
@@ -25,10 +26,24 @@ const RoleplayList: React.FC<Props> = ({ tagId }) => {
     axios
       .post('/api/roleplay', {
         tagId,
+        keyword,
         page: state.page,
       })
       .then(res => {
         state.roleplayList = [...state.roleplayList, ...res.data.data]
+      })
+  }
+
+  const searchRoleplay = (tagId: string) => {
+    axios
+      .post('/api/roleplay', {
+        tagId,
+        keyword,
+        page: state.page,
+      })
+      .then(res => {
+        state.roleplayList = []
+        state.roleplayList = res.data.data
       })
   }
 
@@ -47,7 +62,13 @@ const RoleplayList: React.FC<Props> = ({ tagId }) => {
 
   useEffect(() => {
     getRoleplay(tagId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagId])
+
+  useEffect(() => {
+    searchRoleplay(tagId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [keyword])
 
   return state.roleplayList.length ? (
     <>
@@ -56,7 +77,7 @@ const RoleplayList: React.FC<Props> = ({ tagId }) => {
           <Card key={item.id} hoverable className='cursor-pointer dark:bg-[#18181c] dark:text-white'>
             <div className='css-0 mb-2 line-clamp-1 break-all text-xl font-semibold tracking-wide'>{item.title}</div>
             <div className='line-clamp-3 w-full break-all text-sm text-gray-400'>{item.remark}</div>
-            <div className='flex justify-end mt-2'>
+            <div className='flex justify-end mt-4'>
               <Button type='primary' size='small' shape='round' className='dark:bg-[#243834] dark:text-[#18A058FF]'>
                 使用
               </Button>

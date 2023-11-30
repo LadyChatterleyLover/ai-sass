@@ -7,12 +7,14 @@ import RoleplayList from './RoleplayList'
 interface State {
   tagList: { value: string; label: string }[]
   currentTag: string
+  keyword: string
 }
 
 const TagList = () => {
   const state = useReactive<State>({
     tagList: [],
     currentTag: '',
+    keyword: '',
   })
 
   const getTagList = () => {
@@ -38,7 +40,12 @@ const TagList = () => {
   return state.tagList.length ? (
     <>
       <div className='my-5'>
-        <Input.Search placeholder='搜索prompt提示或关键词...' onSearch={val => {}}></Input.Search>
+        <Input.Search
+          placeholder='搜索prompt提示或关键词...'
+          onSearch={val => {
+            state.keyword = val
+          }}
+        ></Input.Search>
       </div>
       <div className='sticky left-0 right-0 top-0 w-full overflow-hidden'>
         <div className='flex flex-wrap gap-3 justify-center w-full my-5'>
@@ -59,7 +66,7 @@ const TagList = () => {
           ))}
         </div>
       </div>
-      <RoleplayList tagId={state.currentTag}></RoleplayList>
+      <RoleplayList tagId={state.currentTag} keyword={state.keyword}></RoleplayList>
     </>
   ) : null
 }

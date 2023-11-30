@@ -3,25 +3,27 @@ import prisma from '@/app/db/prismadb'
 
 export async function POST(req: Request) {
   const data = await req.json()
-  const { tagId, title, content, page = 1, pageSize = 30 } = data
-  let query = {}
+  const { tagId, keyword, page = 1, pageSize = 30 } = data
+  let query: any = {}
   if (tagId) {
-    query = {
-      tagId,
-    }
-  }
-  if (title) {
-    query = {
-      title,
-    }
-  }
-  if (content) {
-    query = {
-      content,
-    }
+    query.tagId = tagId
   }
   const res = await prisma.roleplay.findMany({
-    where: query,
+    where: {
+      ...query,
+      OR: [
+        {
+          title: {
+            contains: keyword,
+          },
+        },
+        {
+          remark: {
+            contains: keyword,
+          },
+        },
+      ],
+    },
     skip: (page - 1) * pageSize,
     take: pageSize,
   })
