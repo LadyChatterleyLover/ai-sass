@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Tag {
+  id    String     @id() @default(uuid())
+  name  String     @unique
+  items Roleplay[]
+}
+
+model Roleplay {
+  id      String @id() @default(uuid())
+  tag     Tag    @relation(fields: [tagId], references: [id])
+  tagId   String
+  title   String
+  content String @db.Text
+  iconUrl String @db.Text
+  remark  String @db.VarChar(255)
+}
