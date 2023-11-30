@@ -38,7 +38,7 @@ const TagList = () => {
   }, [])
 
   return state.tagList.length ? (
-    <>
+    <div className='flex flex-col'>
       <div className='my-5'>
         <Input.Search
           placeholder='搜索prompt提示或关键词...'
@@ -47,7 +47,7 @@ const TagList = () => {
           }}
         ></Input.Search>
       </div>
-      <div className='sticky left-0 right-0 top-0 w-full overflow-hidden'>
+      <div className='sticky left-0 right-0 top-0 w-full overflow-hidden z-[999] bg-[#f3f4fc] py-2 dark:bg-[#101014]'>
         <div className='flex flex-wrap gap-3 justify-center w-full my-5'>
           {state.tagList.map(item => (
             <Button
@@ -66,8 +66,10 @@ const TagList = () => {
           ))}
         </div>
       </div>
-      <RoleplayList tagId={state.currentTag} keyword={state.keyword}></RoleplayList>
-    </>
+      <div className=''>
+        <RoleplayList tagId={state.currentTag} keyword={state.keyword}></RoleplayList>
+      </div>
+    </div>
   ) : null
 }
 
