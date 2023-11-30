@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { useReactive, useEventListener } from 'ahooks'
 import { Card, Spin, Button } from 'antd'
@@ -14,6 +15,7 @@ interface Props {
 }
 
 const RoleplayList: React.FC<Props> = ({ tagId, keyword }) => {
+  const router = useRouter()
   const state = useReactive<{
     roleplayList: RoleplayItem[]
     page: number
@@ -61,7 +63,7 @@ const RoleplayList: React.FC<Props> = ({ tagId, keyword }) => {
   useEventListener('scroll', handleScroll, { target: window })
 
   useEffect(() => {
-    getRoleplay(tagId)
+    searchRoleplay(tagId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagId])
 
@@ -77,7 +79,12 @@ const RoleplayList: React.FC<Props> = ({ tagId, keyword }) => {
           <Card key={item.id} hoverable className='cursor-pointer dark:bg-[#18181c] dark:text-white'>
             <div className='css-0 mb-2 line-clamp-1 break-all text-xl font-semibold tracking-wide'>{item.title}</div>
             <div className='line-clamp-3 w-full break-all text-sm text-gray-400'>{item.remark}</div>
-            <div className='flex justify-end mt-4'>
+            <div
+              className='flex justify-end mt-4'
+              onClick={() => {
+                router.push(`/chat?id=${item.id}`)
+              }}
+            >
               <Button type='primary' size='small' shape='round' className='dark:bg-[#243834] dark:text-[#18A058FF]'>
                 使用
               </Button>
