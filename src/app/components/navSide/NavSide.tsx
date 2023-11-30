@@ -8,6 +8,7 @@ import { IoMdClipboard } from 'react-icons/io'
 import { FaRegMoon, FaRegBell } from 'react-icons/fa'
 import { LuSun } from 'react-icons/lu'
 import { useThemeStore } from '../../store/theme'
+import { checkAuth } from '@/app/utils/checkAuth'
 
 const NavSide = () => {
   const router = useRouter()
@@ -85,51 +86,48 @@ const NavSide = () => {
   }, [])
 
   return (
-    <div className='f-ull flex flex-col h-full items-center bg-[#e8eaf1] dark:bg-[#25272d] py-5 px-3'>
-      <div className='flex flex-col items-center space-y-3 overflow-x-hidden overflow-y-auto'>
+    <div className="f-ull flex flex-col h-full items-center bg-[#e8eaf1] dark:bg-[#25272d] py-5 px-3">
+      <div className="flex flex-col items-center space-y-3 overflow-x-hidden overflow-y-auto">
         {menuList.map(item => (
           <div
             key={item.path}
             onClick={() => {
-              router.push(item.path)
-            }}
-          >
-            <div className='group h-12 w-12 flex items-center justify-center bg-white rounded-xl cursor-pointer'>
+              checkAuth(() => {
+                router.push(item.path)
+              })
+            }}>
+            <div className="group h-12 w-12 flex items-center justify-center bg-white rounded-xl cursor-pointer">
               <div
                 className={`
                 transition group-hover:scale-110 group-hover:text-[#18A058FF] dark:group-hover:text-[#18A058FF] text-xl
                 ${pathname === item.path && 'text-[#18A058FF]'}
-              `}
-              >
+              `}>
                 {item.icon}
               </div>
             </div>
             <div
               className={`menu-title mt-1 line-clamp-1 text-center text-xs dark:text-white
               ${pathname === item.path && 'text-[#18A058FF]'}
-              `}
-            >
+              `}>
               {item.name}
             </div>
           </div>
         ))}
       </div>
-      <div className='flex flex-col  items-center mt-5'>
+      <div className="flex flex-col  items-center mt-5">
         <div
           className={`
           mb-4 text-xl cursor-pointer
           ${mode === 'dark' ? 'text-white' : ''}
           `}
-          onClick={setMode}
-        >
+          onClick={setMode}>
           {mode === 'light' ? <LuSun></LuSun> : <FaRegMoon></FaRegMoon>}
         </div>
         <div
           className={`
           mb-4 text-xl cursor-pointer
           ${mode === 'dark' ? 'text-white' : ''}
-          `}
-        >
+          `}>
           <FaRegBell></FaRegBell>
         </div>
       </div>
