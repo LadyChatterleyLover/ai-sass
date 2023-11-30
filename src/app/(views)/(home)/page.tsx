@@ -1,6 +1,8 @@
 'use client'
 
-import Header from '@/app/components/home/Header'
+import dynamic from 'next/dynamic'
+
+const Header = dynamic(() => import('../../components/home/Header'), { ssr: false })
 
 export default function Home() {
   return (

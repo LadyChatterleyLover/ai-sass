@@ -52,7 +52,7 @@ const NavSide = () => {
     },
   ]
 
-  const setMode = () => {
+  const setHtmlDark = () => {
     const html = document.querySelector('html')
     const classList = html?.classList
     if (classList?.contains('dark')) {
@@ -60,13 +60,28 @@ const NavSide = () => {
     } else {
       classList?.add('dark')
     }
+  }
+
+  const setMode = () => {
+    setHtmlDark()
     themeStore.setMode(mode === 'light' ? 'dark' : 'light')
+    localStorage.setItem('mode', mode === 'light' ? 'dark' : 'light')
   }
 
   useEffect(() => {
     if (!localStorage.getItem('mode')) {
       localStorage.setItem('mode', 'light')
+      themeStore.setMode('light')
+    } else {
+      const mode = localStorage.getItem('mode') as 'light' | 'dark'
+      themeStore.setMode(mode)
+      if (mode === 'dark') {
+        const html = document.querySelector('html')
+        const classList = html?.classList
+        classList?.add('dark')
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

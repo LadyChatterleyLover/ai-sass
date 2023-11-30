@@ -1,3 +1,5 @@
+'use client'
+
 import { useRouter } from 'next/navigation'
 import TypeIt from 'typeit-react'
 import { Button } from 'antd'
@@ -23,7 +25,7 @@ const Header = () => {
       <div className='flex justify-center w-full mb-8 text-center text-3xl font-extrabold text-[#18A058FF] dark:text-[#18A058FF] lg:text-4xl'>
         嘟嘟AI
       </div>
-      <div className='flex justify-center w-full mb-8 text-lg'>
+      <div className='flex justify-center w-full mb-8 text-lg dark:text-white'>
         <TypeIt
           options={{ loop: true }}
           getBeforeInit={instance => {
