@@ -1,7 +1,23 @@
-import { Button } from 'antd'
+import { useRouter } from 'next/navigation'
 import TypeIt from 'typeit-react'
+import { Button } from 'antd'
 
 const Header = () => {
+  const router = useRouter()
+  const list = [
+    {
+      path: '/chat',
+      name: 'AI对话',
+    },
+    {
+      path: '/draw',
+      name: 'AI绘画',
+    },
+    {
+      path: '/composition',
+      name: 'AI写作',
+    },
+  ]
   return (
     <>
       <div className='flex justify-center w-full mb-8 text-center text-3xl font-extrabold text-[#18A058FF] dark:text-[#18A058FF] lg:text-4xl'>
@@ -28,15 +44,13 @@ const Header = () => {
         />
       </div>
       <div className='flex justify-center w-full gap-x-4 mb-5'>
-        <Button type='primary' size='large' shape='round'>
-          AI对话
-        </Button>
-        <Button type='primary' size='large' shape='round'>
-          AI绘画
-        </Button>
-        <Button type='primary' size='large' shape='round'>
-          AI写作
-        </Button>
+        {list.map((item, index) => {
+          return (
+            <Button key={index} type='primary' shape='round' size='large' onClick={() => router.push(item.path)}>
+              {item.name}
+            </Button>
+          )
+        })}
       </div>
     </>
   )
