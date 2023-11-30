@@ -25,3 +25,12 @@ html,
   background-color: #888; /* 设置滑块背景颜色 */
   border-radius: 4px; /* 设置滑块圆角 */
 }
+
+.role-list .ant-card-actions {
+  border-top: none;
+}
+
+.role-list .ant-card-actions > li {
+  text-align: right;
+  padding: 0 20px;
+}

@@ -1,7 +1,6 @@
 'use client'
 
-import TagList from '@/app/components/home/tagList'
-import { Button, Input, Form, Select } from 'antd'
+import TagList from '@/app/components/home/TagList'
 import dynamic from 'next/dynamic'
 
 const Header = dynamic(() => import('../../components/home/Header'), { ssr: false })

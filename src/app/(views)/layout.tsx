@@ -12,7 +12,7 @@ const ViewLayout: React.FC<Props> = ({ children }) => {
       <div className='w-[72px]'>
         <NavSide></NavSide>
       </div>
-      <div className='mx-auto max-w-screen-3xl p-4 lg:p-6'>{children}</div>
+      <div className='mx-auto max-w-screen-2xl p-4 lg:p-6'>{children}</div>
     </div>
   )
 }
