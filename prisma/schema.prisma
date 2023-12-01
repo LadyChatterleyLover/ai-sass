@@ -8,37 +8,54 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
+  id        Int       @id @default(autoincrement())
   username  String    @unique(map: "User_username_key")
   password  String
+  topics    Topic[]
   avatar    String?   @default("")
   create_at DateTime  @default(now())
   update_at DateTime? @default(now())
 }
 
 model Topic {
-  id        String    @id @default(uuid())
+  id        Int       @id @default(autoincrement())
   title     String
-  roleId    String
+  roleId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
   roleInfo  Roleplay  @relation(fields: [roleId], references: [id])
+  messages  Message[]
   isLock    Boolean   @default(false)
   create_at DateTime  @default(now())
   update_at DateTime? @default(now())
 }
 
 model Tag {
-  id    String     @id() @default(uuid())
-  name  String     @unique
-  items Roleplay[]
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  items     Roleplay[]
+  create_at DateTime   @default(now())
+  update_at DateTime?  @default(now())
 }
 
 model Roleplay {
-  id      String  @id() @default(uuid())
-  tag     Tag     @relation(fields: [tagId], references: [id])
-  tagId   String
-  title   String
-  topic   Topic[]
-  content String  @db.Text
-  iconUrl String  @db.Text
-  remark  String  @db.VarChar(255)
+  id        Int       @id @default(autoincrement())
+  tag       Tag       @relation(fields: [tagId], references: [id])
+  tagId     Int
+  title     String
+  topic     Topic[]
+  content   String    @db.Text
+  remark    String    @db.VarChar(255)
+  create_at DateTime  @default(now())
+  update_at DateTime? @default(now())
+}
+
+model Message {
+  id        Int       @id @default(autoincrement())
+  content   String
+  role      String
+  topic     Topic     @relation(fields: [topicId], references: [id])
+  topicId   Int
+  create_at DateTime  @default(now())
+  update_at DateTime? @default(now())
 }
