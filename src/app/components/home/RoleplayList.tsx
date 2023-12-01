@@ -2,13 +2,11 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import axios from 'axios'
 import { useReactive, useEventListener } from 'ahooks'
 import { Card, Spin, Button } from 'antd'
-import { RoleplayItem } from '@/app/types'
+import { RoleplayItem, User } from '@/app/types'
 import { post } from '@/app/http/request'
-
-const { Meta } = Card
+import { localGet } from '@/app/utils/storage'
 
 interface Props {
   tagId: string
@@ -24,6 +22,7 @@ const RoleplayList: React.FC<Props> = ({ tagId, keyword }) => {
     roleplayList: [],
     page: 1,
   })
+  const user = localGet('ai-user') as User
 
   const getRoleplay = (tagId: string) => {
     post<RoleplayItem[]>('/api/roleplay', {
@@ -79,7 +78,18 @@ const RoleplayList: React.FC<Props> = ({ tagId, keyword }) => {
             <div
               className='flex justify-end mt-4'
               onClick={() => {
-                router.push(`/chat?id=${item.id}`)
+                post<RoleplayItem>('/api/roleplayDetail', {
+                  id: item.id,
+                }).then(res => {
+                  post('/api/topic', {
+                    title: res.data.title,
+                    isLock: false,
+                    userId: user.id,
+                    roleId: res.data.id,
+                  }).then(() => {
+                    router.push(`/chat?id=${item.id}`)
+                  })
+                })
               }}
             >
               <Button type='primary' size='small' shape='round' className='dark:bg-[#243834] dark:text-[#18A058FF]'>

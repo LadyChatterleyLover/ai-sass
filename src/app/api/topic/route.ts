@@ -25,6 +25,10 @@ export async function GET() {
     orderBy: {
       create_at: 'desc',
     },
+    include: {
+      roleInfo: true,
+      user: true,
+    },
   })
   return NextResponse.json({
     code: 200,

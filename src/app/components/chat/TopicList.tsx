@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { get, post } from '@/app/http/request'
 import { useReactive } from 'ahooks'
 import { Button, Empty, message } from 'antd'
@@ -8,10 +9,15 @@ import { PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined } from '@ant
 import { localGet } from '@/app/utils/storage'
 import { BsChatRightDots } from 'react-icons/bs'
 import { PiPushPinSimpleSlash, PiPushPinSimpleLight } from 'react-icons/pi'
-import { Topic } from '@/app/types'
+import { Topic, User } from '@/app/types'
 
-const TopicList = () => {
-  const user = localGet('ai-user')
+const TopicList: React.FC<{ setCurrentTopic: (val: Topic) => void }> = ({ setCurrentTopic }) => {
+  const parmas = useSearchParams()
+  const id = useMemo(() => {
+    return Number(parmas.get('id') as string)
+  }, [parmas])
+
+  const user = localGet('ai-user') as User
   const state = useReactive<{
     topicList: Topic[]
     currentId: number
@@ -24,7 +30,7 @@ const TopicList = () => {
     get<Topic[]>('/api/topic').then(res => {
       state.topicList = res.data
       state.currentId = res.data[0].id
-      console.log('res', res.data)
+      setCurrentTopic(res.data[0])
     })
   }
 
@@ -40,10 +46,11 @@ const TopicList = () => {
           icon={<PlusOutlined />}
           className='flex-1'
           onClick={() => {
-            post<Topic>('/api/topic', {
+            post('/api/topic', {
               title: '新对话',
               isLock: false,
               userId: user.id,
+              roleId: 0,
             }).then(res => {
               if (res.code === 200) {
                 message.success('创建成功')
@@ -68,6 +75,7 @@ const TopicList = () => {
                 }}
                 onClick={() => {
                   state.currentId = item.id
+                  setCurrentTopic(item)
                 }}
               >
                 <div className='flex items-center gap-x-2'>
