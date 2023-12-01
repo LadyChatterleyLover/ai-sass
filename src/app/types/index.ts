@@ -17,3 +17,13 @@ export interface User {
   updateAt: string
   username: string
 }
+
+export interface Topic {
+  create_at: string
+  id: number
+  isLock: boolean
+  roleId: RoleplayItem | null
+  title: string
+  update_at: string
+  userId: number
+}

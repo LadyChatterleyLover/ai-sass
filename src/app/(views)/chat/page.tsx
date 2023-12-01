@@ -6,6 +6,8 @@ import axios from 'axios'
 import { useReactive } from 'ahooks'
 import { RoleplayItem } from '@/app/types'
 
+import TopicList from '@/app/components/chat/TopicList'
+
 const Chat = () => {
   const parmas = useSearchParams()
   const id = useMemo(() => {
@@ -37,8 +39,8 @@ const Chat = () => {
 
   return (
     <div className='h-full flex'>
-      <div className='w-[260px] bg-[#fafbfc]' style={{ borderRight: '1px solid #ddd' }}>
-        1
+      <div className='w-[260px] bg-[#fafbfc] p-5' style={{ borderRight: '1px solid #ddd' }}>
+        <TopicList></TopicList>
       </div>
       <div className='flex-1 p-5'>2</div>
     </div>

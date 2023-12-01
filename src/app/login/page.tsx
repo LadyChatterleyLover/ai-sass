@@ -52,6 +52,7 @@ const Login = () => {
             .then(res => {
               if (res.code === 200) {
                 message.success(res.msg)
+
                 localSet('ai-user', res.data.user)
                 localSet('ai-token', res.data.token)
                 router.push('/')
