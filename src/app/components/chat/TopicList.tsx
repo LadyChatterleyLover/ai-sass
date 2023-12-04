@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { get, post } from '@/app/http/request'
 import { useReactive } from 'ahooks'
 import { Button, Empty, message } from 'antd'
@@ -12,11 +12,11 @@ import { PiPushPinSimpleSlash, PiPushPinSimpleLight } from 'react-icons/pi'
 import { Topic, User } from '@/app/types'
 
 const TopicList: React.FC<{ setCurrentTopic: (val: Topic) => void }> = ({ setCurrentTopic }) => {
-  const parmas = useSearchParams()
+  const router = useRouter()
+  const params = useSearchParams()
   const id = useMemo(() => {
-    return Number(parmas.get('id') as string)
-  }, [parmas])
-
+    return params.get('id') as string
+  }, [params])
   const user = localGet('ai-user') as User
   const state = useReactive<{
     topicList: Topic[]
@@ -29,7 +29,7 @@ const TopicList: React.FC<{ setCurrentTopic: (val: Topic) => void }> = ({ setCur
   const getTopicList = () => {
     get<Topic[]>('/api/topic').then(res => {
       state.topicList = res.data
-      state.currentId = res.data[0].id
+      state.currentId = Number(id) || res.data[0].id
       setCurrentTopic(res.data[0])
     })
   }
@@ -74,6 +74,7 @@ const TopicList: React.FC<{ setCurrentTopic: (val: Topic) => void }> = ({ setCur
                   border: state.currentId === item.id ? '1px solid #18A058FF' : '1px solid #e5e7eb',
                 }}
                 onClick={() => {
+                  router.push(`/chat?id=${item.id}`)
                   state.currentId = item.id
                   setCurrentTopic(item)
                 }}

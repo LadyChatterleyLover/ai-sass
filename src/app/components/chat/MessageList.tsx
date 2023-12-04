@@ -26,18 +26,15 @@ const MessageList: React.FC<Props> = ({ currentTopicId }) => {
   const getTopicDetail = () => {
     post<Topic>('/api/topicDetail', {
       id: currentTopicId,
-    })
-      .then(res => {
-        state.currentTopic = res.data
-        if (state.currentTopic!.messages.length && state.loading) {
-          state.currentTopic!.messages[state.currentTopic!.messages.length - 1].typeit = true
-        }
-      })
-      .finally(() => {
+    }).then(res => {
+      state.currentTopic = res.data
+      if (state.currentTopic!.messages.length && state.loading) {
+        state.currentTopic!.messages[state.currentTopic!.messages.length - 1].typeit = true
         setTimeout(() => {
           state.currentTopic!.messages[state.currentTopic!.messages.length - 1].typeit = false
         }, state.currentTopic!.messages[state.currentTopic!.messages.length - 1].content.length * 200)
-      })
+      }
+    })
   }
 
   const saveMessage = (val: string) => {
@@ -73,7 +70,7 @@ const MessageList: React.FC<Props> = ({ currentTopicId }) => {
 
   useEffect(() => {
     getTopicDetail()
-  }, [])
+  }, [currentTopicId])
 
   return state.currentTopic ? (
     <div className='flex flex-col h-full'>
