@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-const messages = [{ role: 'user', content: '你好,世界' }]
-
-export async function POST() {
+export async function POST(req: NextRequest) {
+  const data = await req.json()
+  const { messages } = data
   const body = JSON.stringify({
     messages,
     model: 'gpt-3.5-turbo',
@@ -20,7 +20,7 @@ export async function POST() {
     const res = await response.json()
     return NextResponse.json({
       code: 200,
-      data: res.data.choices[0].message,
+      data: res.choices[0].message,
     })
   } catch (err) {
     console.log('err', err)

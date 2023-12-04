@@ -18,6 +18,17 @@ export interface User {
   username: string
 }
 
+export interface Message {
+  id: number
+  content: string
+  role: string
+  topic: Topic
+  topicId: number
+  create_at: string
+  update_at: string
+  typeit?: boolean
+}
+
 export interface Topic {
   create_at: string
   id: number
@@ -26,4 +37,6 @@ export interface Topic {
   title: string
   update_at: string
   userId: number
+  messages: Message[]
+  roleInfo: RoleplayItem | null
 }

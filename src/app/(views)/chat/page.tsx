@@ -11,8 +11,8 @@ const Chat = () => {
       <div className='w-[300px] bg-[#fafbfc] p-5' style={{ borderRight: '1px solid #ddd' }}>
         <TopicList setCurrentTopic={setCurrentTopic}></TopicList>
       </div>
-      <div className='flex-1'>
-        <MessageList currentTopic={currentTopic!}></MessageList>
+      <div className='flex-1 h-full'>
+        {currentTopic ? <MessageList currentTopicId={currentTopic!.id}></MessageList> : <div>聊天对话</div>}
       </div>
     </div>
   )

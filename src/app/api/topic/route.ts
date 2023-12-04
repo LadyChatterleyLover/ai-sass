@@ -28,6 +28,7 @@ export async function GET() {
     include: {
       roleInfo: true,
       user: true,
+      messages: true,
     },
   })
   return NextResponse.json({
