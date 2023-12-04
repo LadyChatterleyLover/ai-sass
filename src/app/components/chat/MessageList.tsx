@@ -1,11 +1,12 @@
-import { Avatar, Input, message } from 'antd'
+import { Avatar, Input, Spin, message } from 'antd'
 import { Message, Topic, User } from '@/app/types'
 import dayjs from 'dayjs'
 import { post } from '@/app/http/request'
 import { useReactive } from 'ahooks'
 import { localGet } from '@/app/utils/storage'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import TypeIt from 'typeit-react'
+import { useSearchParams } from 'next/navigation'
 
 interface Props {
   currentTopicId: number
@@ -13,28 +14,69 @@ interface Props {
 
 const MessageList: React.FC<Props> = ({ currentTopicId }) => {
   const user = localGet('ai-user') as User
+  const params = useSearchParams()
+  const id = useMemo(() => {
+    return params.get('id') as string
+  }, [params])
   const state = useReactive<{
     value: string
     currentTopic: Topic | null
+    typeit: boolean
     loading: boolean
   }>({
     value: '',
     currentTopic: null,
+    typeit: false,
     loading: false,
   })
 
   const getTopicDetail = () => {
     post<Topic>('/api/topicDetail', {
-      id: currentTopicId,
+      id: id || currentTopicId,
     }).then(res => {
       state.currentTopic = res.data
-      if (state.currentTopic!.messages.length && state.loading) {
+      if (state.currentTopic!.messages.length && state.typeit) {
         state.currentTopic!.messages[state.currentTopic!.messages.length - 1].typeit = true
         setTimeout(() => {
           state.currentTopic!.messages[state.currentTopic!.messages.length - 1].typeit = false
-        }, state.currentTopic!.messages[state.currentTopic!.messages.length - 1].content.length * 200)
+        }, state.currentTopic!.messages[state.currentTopic!.messages.length - 1].content.length * 50)
       }
     })
+  }
+
+  const genMessage = (val: string) => {
+    state.loading = true
+    post('/api/chat', {
+      messages: state.currentTopic?.roleInfo
+        ? [
+            {
+              role: 'user',
+              content: val,
+            },
+            {
+              role: 'system',
+              content: state.currentTopic!.roleInfo.content,
+            },
+          ]
+        : [
+            {
+              role: 'user',
+              content: val,
+            },
+          ],
+    })
+      .then(res => {
+        state.typeit = true
+        post('/api/message', {
+          ...(res.data as any),
+          topicId: Number(id) || currentTopicId,
+        }).then(() => {
+          getTopicDetail()
+        })
+      })
+      .finally(() => {
+        state.loading = false
+      })
   }
 
   const saveMessage = (val: string) => {
@@ -46,31 +88,16 @@ const MessageList: React.FC<Props> = ({ currentTopicId }) => {
     post('/api/message', {
       role: 'user',
       content: val,
-      topicId: currentTopicId,
+      topicId: Number(id) || currentTopicId,
     }).then(() => {
       getTopicDetail()
     })
-    post('/api/chat', {
-      messages: [
-        {
-          role: 'user',
-          content: val,
-        },
-      ],
-    }).then(res => {
-      state.loading = true
-      post('/api/message', {
-        ...(res.data as any),
-        topicId: currentTopicId,
-      }).then(() => {
-        getTopicDetail()
-      })
-    })
+    genMessage(val)
   }
 
   useEffect(() => {
     getTopicDetail()
-  }, [currentTopicId])
+  }, [id, currentTopicId])
 
   return state.currentTopic ? (
     <div className='flex flex-col h-full'>
@@ -96,49 +123,58 @@ const MessageList: React.FC<Props> = ({ currentTopicId }) => {
             </div>
           ) : (
             <>
-              {state.currentTopic.messages.map(item => (
-                <div key={item.id} className='mb-5'>
-                  <div className={`flex gap-x-3 ${item.role === 'assistant' ? 'justify-start' : 'justify-end'}`}>
-                    {item.role === 'assistant' ? (
-                      <div className='flex gap-x-3'>
-                        <Avatar size={32}>GPT</Avatar>
-                        <div className='flex flex-col gap-y-2 flex-1'>
-                          <div className='text-xs text-[#b4bbc4]'>
-                            {dayjs(item.create_at).format('YYYY-MM-DD HH:mm:ss')}
-                          </div>
-
-                          <div className='text-wrap min-w-[20px] rounded-md px-3 py-2 text-black bg-[#f4f6f8] dark:bg-[#1e1e20] message-reply'>
-                            {item.typeit && state.loading ? (
-                              <TypeIt options={{ speed: 200 }}>{item.content}</TypeIt>
-                            ) : (
-                              item.content
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className='flex gap-x-3'>
-                        <div className='flex flex-col items-end gap-y-2 flex-1'>
-                          <div className='text-xs text-[#b4bbc4]'>
-                            {dayjs(item.create_at).format('YYYY-MM-DD HH:mm:ss')}
-                          </div>
-                          <div className='text-wrap min-w-[20px] w-fit rounded-md px-3 py-2 text-black bg-[#d2f9d1] dark:bg-[#86dfba]'>
-                            {item.content}
-                          </div>
-                        </div>
-                        <Avatar
-                          size={32}
-                          src={
-                            user.avatar
-                              ? user.avatar
-                              : 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
-                          }
-                        ></Avatar>
-                      </div>
-                    )}
-                  </div>
+              {state.loading ? (
+                <div className='w-full h-full flex justify-center items-center'>
+                  <Spin></Spin>
                 </div>
-              ))}
+              ) : (
+                state.currentTopic.messages.map(item => (
+                  <div key={item.id} className='mb-5'>
+                    <div className={`flex gap-x-3 ${item.role === 'assistant' ? 'justify-start' : 'justify-end'}`}>
+                      {item.role === 'assistant' ? (
+                        <div className='flex gap-x-3'>
+                          <Avatar size={32}>GPT</Avatar>
+                          <div className='flex flex-col gap-y-2 flex-1'>
+                            <div className='text-xs text-[#b4bbc4]'>
+                              {dayjs(item.create_at).format('YYYY-MM-DD HH:mm:ss')}
+                            </div>
+
+                            <div className='text-wrap min-w-[20px] rounded-md px-3 py-2 text-black bg-[#f4f6f8] dark:bg-[#1e1e20] message-reply'>
+                              {item.typeit && state.typeit ? (
+                                <TypeIt options={{ speed: 50 }}>{item.content}</TypeIt>
+                              ) : (
+                                <div
+                                  dangerouslySetInnerHTML={{ __html: item.content }}
+                                  style={{ whiteSpace: 'pre-wrap' }}
+                                ></div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className='flex gap-x-3'>
+                          <div className='flex flex-col items-end gap-y-2 flex-1'>
+                            <div className='text-xs text-[#b4bbc4]'>
+                              {dayjs(item.create_at).format('YYYY-MM-DD HH:mm:ss')}
+                            </div>
+                            <div className='text-wrap min-w-[20px] w-fit rounded-md px-3 py-2 text-black bg-[#d2f9d1] dark:bg-[#86dfba]'>
+                              {item.content}
+                            </div>
+                          </div>
+                          <Avatar
+                            size={32}
+                            src={
+                              user.avatar
+                                ? user.avatar
+                                : 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+                            }
+                          ></Avatar>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
             </>
           )}
         </div>
